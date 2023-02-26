@@ -59,6 +59,7 @@ void main() {
       //await iapAndroidPlatform.isAvailable();
       expect(stubPlatform.countPreviousCalls(startConnectionCall), equals(1));
     });
+
     test('re-connects when client sends onBillingServiceDisconnected', () {
       iapAndroidPlatform.billingClientManager.client.callHandler(
         const MethodCall(onBillingServiceDisconnectedCallback,
@@ -66,6 +67,7 @@ void main() {
       );
       expect(stubPlatform.countPreviousCalls(startConnectionCall), equals(2));
     });
+
     test(
         're-connects when operation returns BillingResponse.clientDisconnected',
         () async {
@@ -467,7 +469,8 @@ void main() {
           name: consumeMethodName,
           value: buildBillingResultMap(expectedBillingResultForConsume),
           additionalStepBeforeReturn: (dynamic args) {
-            final String purchaseToken = args['purchaseToken'] as String;
+            final String purchaseToken =
+                (args as Map<Object?, Object?>)['purchaseToken']! as String;
             consumeCompleter.complete(purchaseToken);
           });
 
@@ -581,7 +584,8 @@ void main() {
           name: consumeMethodName,
           value: buildBillingResultMap(expectedBillingResultForConsume),
           additionalStepBeforeReturn: (dynamic args) {
-            final String purchaseToken = args['purchaseToken'] as String;
+            final String purchaseToken =
+                (args as Map<Object?, Object?>)['purchaseToken']! as String;
             consumeCompleter.complete(purchaseToken);
           });
 
@@ -658,7 +662,8 @@ void main() {
           name: consumeMethodName,
           value: buildBillingResultMap(expectedBillingResultForConsume),
           additionalStepBeforeReturn: (dynamic args) {
-            final String purchaseToken = args['purchaseToken'] as String;
+            final String purchaseToken =
+                (args as Map<Object?, Object?>)['purchaseToken']! as String;
             consumeCompleter.complete(purchaseToken);
           });
 
@@ -723,7 +728,8 @@ void main() {
           name: consumeMethodName,
           value: buildBillingResultMap(expectedBillingResultForConsume),
           additionalStepBeforeReturn: (dynamic args) {
-            final String purchaseToken = args['purchaseToken'] as String;
+            final String purchaseToken =
+                (args as Map<Object?, Object?>)['purchaseToken']! as String;
             consumeCompleter.complete(purchaseToken);
           });
 
