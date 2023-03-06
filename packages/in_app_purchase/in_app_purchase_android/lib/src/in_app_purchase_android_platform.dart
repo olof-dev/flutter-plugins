@@ -63,7 +63,7 @@ class InAppPurchaseAndroidPlatform extends InAppPurchasePlatform {
   @override
   Future<bool> isAvailable() async {
     return billingClientManager
-        .runRaw((BillingClient client) => client.isReady());
+        .withClientNonRetryable((BillingClient client) => client.isReady());
   }
 
   @override
@@ -73,7 +73,7 @@ class InAppPurchaseAndroidPlatform extends InAppPurchasePlatform {
     PlatformException? exception;
 
     Future<SkuDetailsResponseWrapper> querySkuDetails(SkuType type) {
-      return billingClientManager.run(
+      return billingClientManager.withClient(
         (BillingClient client) => client.querySkuDetails(
           skuType: type,
           skusList: identifiers.toList(),
@@ -96,6 +96,7 @@ class InAppPurchaseAndroidPlatform extends InAppPurchasePlatform {
         ),
         skuDetailsList: const <SkuDetailsWrapper>[],
       );
+      // Error response for both queries should be the same, so we can reuse it.
       responses = <SkuDetailsResponseWrapper>[response, response];
     }
     final List<ProductDetails> productDetailsList =
@@ -131,7 +132,7 @@ class InAppPurchaseAndroidPlatform extends InAppPurchasePlatform {
     }
 
     final BillingResultWrapper billingResultWrapper =
-        await billingClientManager.run(
+        await billingClientManager.withClient(
       (BillingClient client) => client.launchBillingFlow(
         sku: purchaseParam.productDetails.id,
         accountId: purchaseParam.applicationUserName,
@@ -173,7 +174,7 @@ class InAppPurchaseAndroidPlatform extends InAppPurchasePlatform {
           'completePurchase unsuccessful. The `purchase.verificationData` is not valid');
     }
 
-    return billingClientManager.run(
+    return billingClientManager.withClient(
       (BillingClient client) => client.acknowledgePurchase(
           purchase.verificationData.serverVerificationData),
     );
@@ -187,9 +188,9 @@ class InAppPurchaseAndroidPlatform extends InAppPurchasePlatform {
 
     responses = await Future.wait(<Future<PurchasesResultWrapper>>[
       billingClientManager
-          .run((BillingClient client) => client.queryPurchases(SkuType.inapp)),
+          .withClient((BillingClient client) => client.queryPurchases(SkuType.inapp)),
       billingClientManager
-          .run((BillingClient client) => client.queryPurchases(SkuType.subs)),
+          .withClient((BillingClient client) => client.queryPurchases(SkuType.subs)),
     ]);
 
     final Set<String> errorCodeSet = responses
